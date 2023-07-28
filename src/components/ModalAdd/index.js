@@ -1,0 +1,146 @@
+import { useState } from 'react';
+
+import Modal from 'react-bootstrap/Modal';
+import Button from 'react-bootstrap/Button';
+import Form from 'react-bootstrap/Form';
+import Col from 'react-bootstrap/Col';
+import InputGroup from 'react-bootstrap/InputGroup';
+import Row from 'react-bootstrap/Row';
+
+
+export default function ModalAdd({show, setModalShow, productNames, handleAddProducts}){
+    const [product, setProduct] = useState({type: 'produto'});
+    const [codes, setCodes] = useState([]);
+    const [validated, setValidated] = useState(false);
+
+    const handleSubmit = (event) => {
+        const form = event.currentTarget;
+        const codesWithProduct = codes.map(code => ({...product, code}));
+
+        if (form.checkValidity() === false) {
+            event.preventDefault();
+            event.stopPropagation();
+
+            setValidated(true);
+        } else {
+            event.preventDefault();
+            setModalShow(false);
+            handleAddProducts(codesWithProduct);
+        }
+    };
+
+    function handleChangeProduct(newEntry) {
+        setProduct({...product, ...newEntry});
+    }
+
+    function handleOnBlurCodesAmount(amount) {
+        let amountAsInt = parseInt(amount);
+
+        if(amountAsInt > 30){
+            amountAsInt = 30
+        }
+
+        setCodes(Array(amountAsInt).fill(""))
+    }
+
+    function handleChangeCodes(code, index) {
+        let newCodes = [...codes]
+
+        newCodes[index] = code
+
+        setCodes(newCodes);
+    }
+
+
+    return (
+        <Modal show={show} onHide={() => setModalShow(false)} size='lg'>
+            <Form noValidate validated={validated} onSubmit={handleSubmit}>
+                <Modal.Header closeButton>
+                    <Modal.Title>Adicionar Produtos</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    <Row className="mb-3">
+                        <Form.Group as={Col} md="12">
+                            <Form.Label>Produto</Form.Label>
+                            <Form.Select 
+                            required 
+                            onChange={(e) => handleChangeProduct({
+                                id_yampi: e.target.options[e.target.selectedIndex].dataset.idYampi, 
+                                name: e.currentTarget.value
+                            })}>
+                                <option value="">Selecione</option>
+                                {productNames.map((e, i) => (
+                                    <option key={i} value={e.name} data-id-yampi={e.id}>
+                                        {e.name}
+                                    </option>
+                                ))}
+                            </Form.Select>
+                            <Form.Control.Feedback type="invalid">Selecione um produto.</Form.Control.Feedback>
+                        </Form.Group>
+                    </Row>
+                    <Row className="mb-3">
+                        <Form.Group as={Col} md="6" >
+                            <Form.Label>Tipo</Form.Label>
+                            <Form.Select onChange={(e) => handleChangeProduct({type: e.currentTarget.value})}>
+                                <option value='produto'>Produto</option>
+                                <option value='servico'>Serviço</option>
+                            </Form.Select>
+                        </Form.Group>
+                        <Form.Group as={Col} md="2" >
+                            <Form.Label>Qtd</Form.Label>
+                            <InputGroup hasValidation>
+                                <Form.Control
+                                    type="number"
+                                    placeholder="Qtd"
+                                    required
+                                    max="30"
+                                    min="1"
+                                    onBlur={(e) => handleOnBlurCodesAmount(e.currentTarget.value)}
+                                />
+                                <Form.Control.Feedback type="invalid">Insira uma quantidade.</Form.Control.Feedback>
+                            </InputGroup>
+                        </Form.Group>
+                    </Row>
+                    <Row className="mb-3">
+                        <Form.Group as={Col} md="12" >
+                            <Form.Label>Mensagem</Form.Label>
+                            <Form.Control
+                                as="textarea"
+                                placeholder="Mensagem"
+                                style={{ height: '80px' }}
+                                required
+                                onBlur={(e) => handleChangeProduct({message: e.currentTarget.value})}
+                            />
+                        </Form.Group>
+                        <Form.Control.Feedback type="invalid">Insira um código.</Form.Control.Feedback>
+                    </Row>
+                    <Row className="mb-3">
+                        <Form.Group as={Col} md="12" >
+                            <Form.Label>Códigos</Form.Label>
+                            {codes.map((e, i) => (
+                                <InputGroup hasValidation className="mb-2" key={i}>
+                                    <Form.Control
+                                        type="text"
+                                        placeholder="Código"
+                                        aria-describedby="inputGroupPrepend"
+                                        required
+                                        onChange={(e) => handleChangeCodes(e.currentTarget.value, i)}
+                                    />
+                                    <Form.Control.Feedback type="invalid">Insira um código.</Form.Control.Feedback>
+                                </InputGroup>
+                            ))}
+                        </Form.Group>
+                    </Row>
+                </Modal.Body>
+                <Modal.Footer>
+                    <Button variant="secondary" onClick={() => setModalShow(false)}>
+                        Fechar
+                    </Button>
+                    <Button variant="primary" type="submit">
+                        Salvar
+                    </Button>
+                </Modal.Footer>
+            </Form>
+        </Modal>
+    )
+}
