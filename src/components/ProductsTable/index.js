@@ -5,7 +5,23 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPenToSquare, faTrash } from '@fortawesome/free-solid-svg-icons';
 
 
-export default function ProductsTable({products, handleEditClick, handleDeleteClick}){
+function PlaceHolder() {
+    return (
+        Array(3).fill(0).map((_, i) => (
+            <tr key={i}>
+                {
+                Array(6).fill(0).map((_, j) => (
+                    <td key={j} className='placeholder-glow'>
+                        <div className='placeholder' style={{height: '100%', width: '100%'}}></div>
+                    </td>
+                ))
+                }
+            </tr>
+        ))
+    )
+}
+
+export default function ProductsTable({products, productsStatus, handleEditClick, handleDeleteClick}){
     return (
         <>
             <Table responsive hover className="same-col-widths">
@@ -21,6 +37,7 @@ export default function ProductsTable({products, handleEditClick, handleDeleteCl
                 </thead>
                 <tbody>
                     {
+                        productsStatus === 'pending' ? <PlaceHolder/> :
                         !!products.length ?
                         products.map((item, i) => (
                             <tr key={i}>
@@ -34,18 +51,22 @@ export default function ProductsTable({products, handleEditClick, handleDeleteCl
                                 </td>
                                 <td>{item.message}</td>
                                 <td>
-                                    <Button variant="outline-primary" size='sm' onClick={() => handleEditClick(item)}>
-                                        <FontAwesomeIcon icon={faPenToSquare} />
-                                    </Button>{' '}
-                                    <Button variant="outline-danger" size='sm' onClick={() => handleDeleteClick(item.id)}>
-                                        <FontAwesomeIcon icon={faTrash} />
-                                    </Button>
+                                    <div style={{display: 'flex', height: '100%', alignItems: 'center'}}>
+                                        <Button style={{marginRight: '2px'}} variant="outline-primary" size='sm' onClick={() => handleEditClick(item)}>
+                                            <FontAwesomeIcon icon={faPenToSquare} />
+                                        </Button>
+                                        <Button variant="outline-danger" size='sm' onClick={() => handleDeleteClick(item.id)}>
+                                            <FontAwesomeIcon icon={faTrash} />
+                                        </Button>
+                                    </div>
                                 </td>
                             </tr>
-                        )) :
+                        )) : 
                         (
                             <tr>
-                                <td colSpan={6}><h3>Nenhum produto encontrado</h3></td>
+                                <td colSpan={6}>
+                                    <h3>Nenhum produto encontrado</h3>
+                                </td>
                             </tr>
                         )
                     }

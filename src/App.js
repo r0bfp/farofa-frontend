@@ -16,26 +16,21 @@ function App() {
     const [alert, setAlert] = useState({show: false, variant: '', message: ''});
     const [selectedProduct, setSelectedProduct] = useState({});
     const [products, setProducts] = useState([]);
+    const [productsStatus, setProductsStatus] = useState('done');
 
     useEffect(() => {
-        async function fetchProductsNames() {
-            const response = await api.get('yampi/products');
+        api.get('yampi/products')
+            .then((response) => {
+                setProductNames(response.data);
+            });
 
-            const products = response.data;
+        setProductsStatus('pending');
 
-            setProductNames(products);
-        }
-
-        async function fetchProducts() {
-            const response = await api.get('products');
-
-            const products = response.data.results
-
-            setProducts(products);
-        }
-
-        fetchProductsNames();
-        fetchProducts()
+        api.get('products')
+            .then((response) => {
+                setProducts(response.data.results);
+                setProductsStatus('done');
+            })
     }, [])
 
     useEffect(() => {
@@ -49,30 +44,33 @@ function App() {
         setModalEditShow(true);
     }
 
-    async function handleAddProducts(products) {
-        setProducts(prev => [...prev, ...products]);
-
-        await Promise.all(products.map(product => api.post('products/', product)));
+    function handleAddProducts(newProducts, setSalvarButtonDisabled) {
+        Promise.all(newProducts.map(product => api.post('products/', product)))
+            .then((responses) => {
+                responses.map(response => setProducts(prev => [...prev, response.data]))
+            })
+            .catch(() => {
+                setAlert({show: true, variant: 'danger', message: 'Ocorreu um problema ao adicionar o produto'})
+            })
+            .finally(() => setModalAddShow(false))
     }
 
     function handleEditProduct(product) {
         api.put(`products/${product.id}/`, product)
-            .then(() => {
-                setProducts(prev => prev.map(e => e.id === product.id ? product : e));
-            })
-            .catch((error) => {
+            .catch(() => {
                 setAlert({show: true, variant: 'danger', message: 'Ocorreu um problema ao editar esse produto'})
             });
+
+        setProducts(prev => prev.map(e => e.id === product.id ? product : e));
     }
 
     function handleDeleteClick(productId) {
         api.delete(`products/${productId}/`)
             .catch(() => {
-                setAlert({show: true, variant: 'info', message: 'Esse produto já foi excluído ou vendido'})
+                setAlert({show: true, variant: 'danger', message: 'Ocorreu um problema ao remover o produto'})
             })
-            .finally(() => {
-                setProducts(prev => prev.filter((e, i) => e.id !== productId))
-            });
+
+        setProducts(prev => prev.filter((e, i) => e.id !== productId))
     }
 
     const containerStyle = {
@@ -97,7 +95,7 @@ function App() {
                 <Card.Body>
                     <Card.Title>Controle de Estoque</Card.Title>
                     <Card.Body  style={{maxHeight: '400px', overflowY: 'auto'}}>
-                        <ProductsTable products={products} handleEditClick={handleEditClick} handleDeleteClick={handleDeleteClick}/>
+                        <ProductsTable products={products} productsStatus={productsStatus} handleEditClick={handleEditClick} handleDeleteClick={handleDeleteClick}/>
                     </Card.Body>
                     <Button variant="primary" onClick={() => setModalAddShow(true)}>Adicionar</Button>
                 </Card.Body>

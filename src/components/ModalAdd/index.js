@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import Modal from 'react-bootstrap/Modal';
 import Button from 'react-bootstrap/Button';
@@ -9,11 +9,21 @@ import Row from 'react-bootstrap/Row';
 
 
 export default function ModalAdd({show, setModalShow, productNames, handleAddProducts}){
-    const [product, setProduct] = useState({type: 'produto'});
     const [codes, setCodes] = useState([]);
     const [validated, setValidated] = useState(false);
+    const [product, setProduct] = useState({});
 
-    const handleSubmit = (event) => {
+    useEffect(() => {
+        setProduct({
+            name: '',
+            code: '',
+            id_yampi: '',
+            type: 'produto',
+            message: 'Resgate seu código promocional no site aq.com/code. Basta copiar e colar o código, em caso de erros entre em contato com o suporte (21) 98860-6223'
+        })
+    }, [])
+
+    function handleSubmit(event) {
         const form = event.currentTarget;
         const codesWithProduct = codes.map(code => ({...product, code}));
 
@@ -24,14 +34,17 @@ export default function ModalAdd({show, setModalShow, productNames, handleAddPro
             setValidated(true);
         } else {
             event.preventDefault();
-            setModalShow(false);
             handleAddProducts(codesWithProduct);
+            setProduct({
+                name: '',
+                code: '',
+                id_yampi: '',
+                type: 'produto',
+                message: 'Resgate seu código promocional no site aq.com/code. Basta copiar e colar o código, em caso de erros entre em contato com o suporte (21) 98860-6223'
+            });
+            setCodes([]);
         }
     };
-
-    function handleChangeProduct(newEntry) {
-        setProduct({...product, ...newEntry});
-    }
 
     function handleOnBlurCodesAmount(amount) {
         let amountAsInt = parseInt(amount);
@@ -51,7 +64,6 @@ export default function ModalAdd({show, setModalShow, productNames, handleAddPro
         setCodes(newCodes);
     }
 
-
     return (
         <Modal show={show} onHide={() => setModalShow(false)} size='lg'>
             <Form noValidate validated={validated} onSubmit={handleSubmit}>
@@ -63,11 +75,13 @@ export default function ModalAdd({show, setModalShow, productNames, handleAddPro
                         <Form.Group as={Col} md="12">
                             <Form.Label>Produto</Form.Label>
                             <Form.Select 
+                            disabled={!productNames.length}
                             required 
-                            onChange={(e) => handleChangeProduct({
+                            onChange={(e) => setProduct(prev => ({
+                                ...prev,
                                 id_yampi: e.target.options[e.target.selectedIndex].dataset.idYampi, 
-                                name: e.currentTarget.value
-                            })}>
+                                name: e.target.value
+                            }))}>
                                 <option value="">Selecione</option>
                                 {productNames.map((e, i) => (
                                     <option key={i} value={e.name} data-id-yampi={e.id}>
@@ -81,7 +95,7 @@ export default function ModalAdd({show, setModalShow, productNames, handleAddPro
                     <Row className="mb-3">
                         <Form.Group as={Col} md="6" >
                             <Form.Label>Tipo</Form.Label>
-                            <Form.Select onChange={(e) => handleChangeProduct({type: e.currentTarget.value})}>
+                            <Form.Select onChange={(e) => setProduct(prev => ({...prev, type: e.currentTarget.value}))}>
                                 <option value='produto'>Produto</option>
                                 <option value='servico'>Serviço</option>
                             </Form.Select>
@@ -109,7 +123,8 @@ export default function ModalAdd({show, setModalShow, productNames, handleAddPro
                                 placeholder="Mensagem"
                                 style={{ height: '80px' }}
                                 required
-                                onBlur={(e) => handleChangeProduct({message: e.currentTarget.value})}
+                                onChange={(e) => setProduct(prev => ({...prev, message: e.target.value}))}
+                                defaultValue='Resgate seu código promocional no site aq.com/code. Basta copiar e colar o código, em caso de erros entre em contato com o suporte (21) 98860-6223'
                             />
                         </Form.Group>
                         <Form.Control.Feedback type="invalid">Insira um código.</Form.Control.Feedback>
