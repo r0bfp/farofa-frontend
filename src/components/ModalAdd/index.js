@@ -9,9 +9,12 @@ import Row from 'react-bootstrap/Row';
 
 
 export default function ModalAdd({show, setModalShow, productNames, handleAddProducts}){
+    const defaultMessage = 'Resgate seu código promocional no site aq.com/code. Basta copiar e colar o código, em caso de erros entre em contato com o suporte (21) 98860-6223'
+
     const [codes, setCodes] = useState([]);
     const [validated, setValidated] = useState(false);
     const [product, setProduct] = useState({});
+    const [isService, setIsService] = useState(false);
 
     useEffect(() => {
         setProduct({
@@ -19,13 +22,13 @@ export default function ModalAdd({show, setModalShow, productNames, handleAddPro
             code: '',
             id_yampi: '',
             type: 'produto',
-            message: 'Resgate seu código promocional no site aq.com/code. Basta copiar e colar o código, em caso de erros entre em contato com o suporte (21) 98860-6223'
+            message: defaultMessage
         })
     }, [])
 
     function handleSubmit(event) {
         const form = event.currentTarget;
-        const codesWithProduct = codes.map(code => ({...product, code}));
+        const codesWithProduct = product.type === 'produto' ? codes.map(code => ({...product, code})) : Array({...product, message: ''});
 
         if (form.checkValidity() === false) {
             event.preventDefault();
@@ -40,11 +43,18 @@ export default function ModalAdd({show, setModalShow, productNames, handleAddPro
                 code: '',
                 id_yampi: '',
                 type: 'produto',
-                message: 'Resgate seu código promocional no site aq.com/code. Basta copiar e colar o código, em caso de erros entre em contato com o suporte (21) 98860-6223'
+                message: defaultMessage
             });
+            setIsService(false);
             setCodes([]);
         }
     };
+
+    function handleChangeType(value) {
+        setProduct(prev => ({...prev, type: value}))
+        
+        setIsService(value !== 'produto')
+    }
 
     function handleOnBlurCodesAmount(amount) {
         let amountAsInt = parseInt(amount);
@@ -95,7 +105,9 @@ export default function ModalAdd({show, setModalShow, productNames, handleAddPro
                     <Row className="mb-3">
                         <Form.Group as={Col} md="6" >
                             <Form.Label>Tipo</Form.Label>
-                            <Form.Select onChange={(e) => setProduct(prev => ({...prev, type: e.currentTarget.value}))}>
+                            <Form.Select 
+                            onChange={(e) => handleChangeType(e.currentTarget.value)}
+                            >
                                 <option value='produto'>Produto</option>
                                 <option value='servico'>Serviço</option>
                             </Form.Select>
@@ -104,6 +116,7 @@ export default function ModalAdd({show, setModalShow, productNames, handleAddPro
                             <Form.Label>Qtd</Form.Label>
                             <InputGroup hasValidation>
                                 <Form.Control
+                                    disabled={isService}
                                     type="number"
                                     placeholder="Qtd"
                                     required
@@ -119,12 +132,13 @@ export default function ModalAdd({show, setModalShow, productNames, handleAddPro
                         <Form.Group as={Col} md="12" >
                             <Form.Label>Mensagem</Form.Label>
                             <Form.Control
+                                disabled={isService}
                                 as="textarea"
                                 placeholder="Mensagem"
                                 style={{ height: '80px' }}
                                 required
                                 onChange={(e) => setProduct(prev => ({...prev, message: e.target.value}))}
-                                defaultValue='Resgate seu código promocional no site aq.com/code. Basta copiar e colar o código, em caso de erros entre em contato com o suporte (21) 98860-6223'
+                                defaultValue={defaultMessage}
                             />
                         </Form.Group>
                         <Form.Control.Feedback type="invalid">Insira um código.</Form.Control.Feedback>

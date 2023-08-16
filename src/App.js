@@ -64,7 +64,7 @@ function App() {
         setModalEditShow(true);
     }
 
-    function handleAddProducts(newProducts, setSalvarButtonDisabled) {
+    function handleAddProducts(newProducts) {
         Promise.all(newProducts.map(product => api.post('products/', product)))
             .then((responses) => {
                 responses.map(response => setProducts(prev => [...prev, response.data]))
