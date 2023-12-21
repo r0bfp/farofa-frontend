@@ -59,10 +59,6 @@ export default function ModalAdd({show, setModalShow, productNames, handleAddPro
     function handleOnBlurCodesAmount(amount) {
         let amountAsInt = parseInt(amount);
 
-        if(amountAsInt > 30){
-            amountAsInt = 30
-        }
-
         setCodes(Array(amountAsInt).fill(""))
     }
 
@@ -85,13 +81,14 @@ export default function ModalAdd({show, setModalShow, productNames, handleAddPro
                         <Form.Group as={Col} md="12">
                             <Form.Label>Produto</Form.Label>
                             <Form.Select 
-                            disabled={!productNames.length}
-                            required 
-                            onChange={(e) => setProduct(prev => ({
-                                ...prev,
-                                id_yampi: e.target.options[e.target.selectedIndex].dataset.idYampi, 
-                                name: e.target.value
-                            }))}>
+                                disabled={!productNames.length}
+                                required 
+                                onChange={(e) => setProduct(prev => ({
+                                    ...prev,
+                                    id_yampi: e.target.options[e.target.selectedIndex].dataset.idYampi, 
+                                    name: e.target.value
+                                }))}
+                            >
                                 <option value="">Selecione</option>
                                 {productNames.map((e, i) => (
                                     <option key={i} value={e.name} data-id-yampi={e.id}>
@@ -120,7 +117,7 @@ export default function ModalAdd({show, setModalShow, productNames, handleAddPro
                                     type="number"
                                     placeholder="Qtd"
                                     required
-                                    max="30"
+                                    max="50"
                                     min="1"
                                     onBlur={(e) => handleOnBlurCodesAmount(e.currentTarget.value)}
                                 />
@@ -144,7 +141,14 @@ export default function ModalAdd({show, setModalShow, productNames, handleAddPro
                         <Form.Control.Feedback type="invalid">Insira um código.</Form.Control.Feedback>
                     </Row>
                     <Row className="mb-3">
-                        <Form.Group as={Col} md="12" >
+                        <Form.Group 
+                            as={Col} 
+                            md="12" 
+                            style={{
+                                maxHeight: '300px',
+                                overflow: 'auto'
+                            }}
+                        >
                             <Form.Label>Códigos</Form.Label>
                             {codes.map((e, i) => (
                                 <InputGroup hasValidation className="mb-2" key={i}>
