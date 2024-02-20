@@ -1,0 +1,31 @@
+.container {
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.header-container {
+    padding: 20px 1rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+.header-container > h3 {
+    margin-top: 20px;
+}
+
+.image-container {
+    width: 180px;
+}
+
+.image-container > img {
+    width: 100%;
+    height: auto;
+}
+
+.content {
+    min-width: 350px;
+}
