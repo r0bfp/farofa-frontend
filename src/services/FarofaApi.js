@@ -45,12 +45,12 @@ export const FarofaApi = {
         return response.status === 200
     },
     listProducts: async () => {
-        const response = await api.get('/products')
+        try {
+            const response = await api.get('/products')
 
-        if(response.status !== 200){
+            return response.status === 200 && response.data
+        } catch (error) {
             return false
-        }else{
-            return response.data
         }
     },
     addProducts: async (products) => {
@@ -69,12 +69,12 @@ export const FarofaApi = {
         return api.put(`/products/${product.id}`, product)
     },
     listYampiProducts: async () => {
-        const response = await api.get('/yampi/products')
-        
-        if(response.status !== 200){
+        try {
+            const response = await api.get('/yampi/products')
+
+            return response.status === 200 && response.data
+        } catch (error) {
             return false
-        }else{
-            return response.data
         }
     },
 }
