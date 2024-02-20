@@ -1,0 +1,9 @@
+.codes-container {
+    max-height: 170px;
+    overflow: auto;
+    padding: 10px 1rem;
+}
+
+.codes-title { 
+    padding: 0 1rem;
+}
