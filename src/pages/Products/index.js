@@ -35,7 +35,12 @@ export default function Products() {
                     </div>
                 </div>
                 <div className='container-body'>
-                    <ProductsTable products={products} setProducts={setProducts} yampiProducts={yampiProducts}/>
+                    <ProductsTable
+                        products={products}
+                        setProducts={setProducts}
+                        yampiProducts={yampiProducts}
+                        fetchProducts={fetchProducts}
+                    />
                 </div>
                 <div className='container-footer'>
                     <span className='text-secondary'>{products.length} Registros</span>

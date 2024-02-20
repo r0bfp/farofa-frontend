@@ -11,7 +11,7 @@ import './style.css'
 import EditProductModal from '../EditProductModal'
 
 
-export default function ProductsTable({products, setProducts, yampiProducts}) {
+export default function ProductsTable({products, setProducts, yampiProducts, fetchProducts}) {
     const [selectedProduct, setSelectedProduct] = useState({})
     const [modal, setModal] = useState({add: false, edit: false, delete: false})
     const [search, setSearch] = useState('')
@@ -30,7 +30,11 @@ export default function ProductsTable({products, setProducts, yampiProducts}) {
     }
 
     function handleEditProduct(product) {
-        setProducts(prev => prev.map(e => e.id === product.id ? ({...e, ...product}) : e))
+        setProducts(prev => prev.map(e => e.id === product.id ? product : e))
+    }
+
+    async function handleAddProduct() {
+        await fetchProducts()
     }
 
     function handleSelectProduct(modal, product) {
@@ -67,9 +71,9 @@ export default function ProductsTable({products, setProducts, yampiProducts}) {
                     </Table.Head>
                     <Table.Body>
                         {
-                            filteredProducts.map(product => (
+                            filteredProducts.map((product, index) => (
                                 <Table.Row key={product.id}>
-                                    <Table.Cell>{product.id}</Table.Cell>
+                                    <Table.Cell>{index + 1}</Table.Cell>
                                     <Table.Cell>{product.name}</Table.Cell>
                                     <Table.Cell>{product.code}</Table.Cell>
                                     <Table.Cell>
@@ -97,6 +101,7 @@ export default function ProductsTable({products, setProducts, yampiProducts}) {
                 isShow={modal.add} 
                 yampiProducts={yampiProducts} 
                 handleModalShow={handleModalShow}
+                handleAddProduct={handleAddProduct}
             />
             <DeleteProductModal 
                 isShow={modal.delete} 
