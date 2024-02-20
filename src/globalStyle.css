@@ -1,6 +1,12 @@
+:root {
+    --main-background-color: #F9FAFD;
+    --border: 1px solid #cbd0dd;
+    --border-radius: 8px;
+    --module-padding: 24px;
+}
 
 html, body {
-    background-color: #F9FAFD;
+    background-color: var(--main-background-color);
     height: 100vh;
     margin: 0;
     padding: 0;
