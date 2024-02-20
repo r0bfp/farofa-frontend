@@ -1,0 +1,27 @@
+.table-content {
+    max-height: 300px;
+    min-width: 800px;
+    overflow: auto;
+}
+
+.btn-link {
+    color: #8f959b !important;
+}
+
+.btn-link:hover {
+    color: #5c636a !important;
+}
+
+.product-actions {
+    margin-bottom: 12px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.filter-container {
+    display: flex;
+}
+
+.filter-container > button {
+    margin-left: 12px;
+}
