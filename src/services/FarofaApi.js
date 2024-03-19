@@ -1,4 +1,5 @@
 import axios from "axios"
+import JSONbigint from "json-bigint"
 
 
 const api = axios.create({baseURL: process.env.REACT_APP_API_URL_V2})
@@ -16,6 +17,7 @@ api.interceptors.request.use(
         return Promise.reject(error)
     }
 )
+
 
 export const FarofaApi = {
     signin: async (username, password) => {
@@ -46,9 +48,14 @@ export const FarofaApi = {
     },
     listProducts: async () => {
         try {
-            const response = await api.get('/products')
+            const response = await api.get('/products', { 
+                transformResponse: [data => data] 
+            })
 
-            return response.status === 200 && response.data
+            let parsedResponse = JSONbigint.parse(response.data)
+            parsedResponse = parsedResponse.map(e => ({...e, id: e.id.toString()}))
+
+            return response.status === 200 && parsedResponse
         } catch (error) {
             return false
         }
@@ -74,7 +81,7 @@ export const FarofaApi = {
 
             return response.status === 200 && response.data
         } catch (error) {
-            return false
+            return []
         }
     },
 }
