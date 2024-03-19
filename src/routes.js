@@ -5,6 +5,7 @@ import Login from "./pages/Login"
 import Products from "./pages/Products"
 import { useContext, useEffect, useState } from "react"
 import { AuthContext } from "./contexts/AuthContext"
+import Loader from "./components/Loader"
 
 
 const PrivateRoute = () => {
@@ -22,7 +23,7 @@ const PrivateRoute = () => {
     }, [validate_token])
 
     if (isValid === null) {
-        return <></>
+        return <Loader/>
     }
   
     return isValid ? <Outlet /> : <Navigate to="/" />
