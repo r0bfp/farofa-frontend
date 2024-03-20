@@ -34,8 +34,7 @@ export default function ProductsTable({products, setProducts, yampiProducts, fet
     }
 
     async function handleAddProducts(products) {
-        console.log(products);
-        // await fetchProducts()
+        setProducts(prev => prev.concat(products))
     }
 
     function handleSelectProduct(modal, product) {
