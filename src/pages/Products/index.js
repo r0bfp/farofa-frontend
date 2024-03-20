@@ -9,6 +9,7 @@ import Loader from '../../components/Loader'
 export default function Products() {
     const [products, setProducts] = useState([])
     const [yampiProducts, setYampiProducts] = useState([])
+    const [sendMailIsActive, setSendMailIsActive] = useState(false)
     const [loading, setLoading] = useState(false)
 
     useEffect(() => {
@@ -19,13 +20,19 @@ export default function Products() {
         try {
             setLoading(true)
 
-            const [productsResponse, yampiProductsResponse] = await Promise.all([
+            const [
+                productsResponse, 
+                yampiProductsResponse, 
+                sendMailIsActiveResponse
+            ] = await Promise.all([
                 FarofaApi.listProducts(),
-                FarofaApi.listYampiProducts()
+                FarofaApi.listYampiProducts(),
+                FarofaApi.sendMailIsActive()
             ])
 
             setProducts(productsResponse)
             setYampiProducts(yampiProductsResponse)
+            setSendMailIsActive(sendMailIsActiveResponse)
         } catch (error) {
             console.error('Erro ao buscar dados:', error)
         } finally {
@@ -44,7 +51,7 @@ export default function Products() {
                             <span className='text-secondary'>Gerenciamento do estoque de produtos</span>
                         </div>
                         <div>
-                            <SettingsDropdown />
+                            <SettingsDropdown sendMailIsActive={sendMailIsActive} setSendMailIsActive={setSendMailIsActive}/>
                         </div>
                     </div>
                     <div className='container-body'>

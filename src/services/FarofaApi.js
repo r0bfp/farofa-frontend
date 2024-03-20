@@ -84,4 +84,20 @@ export const FarofaApi = {
             return []
         }
     },
+    sendMailIsActive: async () => {
+        try {
+            const response = await api.get('/yampi/send-mail')
+
+            return response.data.active
+        } catch (error) {
+            return false
+        }
+    },
+    updateSendMailActive: async (isActive) => {
+        try {
+            await api.put('/yampi/send-mail', {active: isActive})
+        } catch (error) {
+            return 
+        }
+    },
 }

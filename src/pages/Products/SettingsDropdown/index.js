@@ -5,15 +5,22 @@ import { useNavigate } from 'react-router-dom';
 import { useContext } from 'react';
 import { AuthContext } from '../../../contexts/AuthContext'
 import './style.css'
+import { FarofaApi } from '../../../services/FarofaApi';
 
 
-export default function SettingsDropdown() {
+export default function SettingsDropdown({sendMailIsActive, setSendMailIsActive}) {
     const navigate = useNavigate()
     const {signout} = useContext(AuthContext)
 
     function handleSignout() {
         signout()
         navigate('/')
+    }
+
+    async function handleChangeIsActive(isActive) {
+        setSendMailIsActive(isActive)
+
+        await FarofaApi.updateSendMailActive(isActive)
     }
 
     return (
@@ -29,6 +36,8 @@ export default function SettingsDropdown() {
                             type="switch"
                             reverse
                             inline
+                            checked={sendMailIsActive}
+                            onChange={e => handleChangeIsActive(e.target.checked)}
                         />
                     </div>
                 </Dropdown.ItemText>
