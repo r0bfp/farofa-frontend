@@ -63,7 +63,7 @@ export const FarofaApi = {
     addProducts: async (products) => {
         const promises = products.map(product =>
             api.post('/products', product)
-              .then(response => ({ code: product.code, status: response.status }))
+              .then(response => ({status: response.status, ...response.data}))
               .catch(error => ({ code: product.code, status: error.response.status }))
         )
 
