@@ -80,7 +80,7 @@ export default function AddProductModal({isShow, yampiProducts, handleModalShow,
 
                 setValidated(false)
                 closeModal()
-                handleAddProducts(successes)
+                handleAddProducts(responses.filter(resp => resp.status === 201))
             })
         resetForm(form)
     }
