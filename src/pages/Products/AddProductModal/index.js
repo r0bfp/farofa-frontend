@@ -5,7 +5,7 @@ import { useState } from "react"
 import './style.css'
 
 
-export default function AddProductModal({isShow, yampiProducts, handleModalShow, handleAddProduct}) {
+export default function AddProductModal({isShow, yampiProducts, handleModalShow, handleAddProducts}) {
     const defaultMessage = 'Resgate seu código promocional no site aq.com/code. Basta copiar e colar o código, em caso de erros entre em contato com o suporte (21) 98860-6223'
     
     const [codesAmount, setCodesAmount] = useState(1)
@@ -57,7 +57,7 @@ export default function AddProductModal({isShow, yampiProducts, handleModalShow,
             name: yampiProducts.find(e => e.id == product.value).name,
             id_yampi: product.value,
             message: message.value,
-            code: type.value === 'produto' && code.value,
+            code: type.value === 'produto' ? code.value : '',
         }
 
         const products = code ? codes.map(code => ({...formData, code})) : [formData]
@@ -80,9 +80,9 @@ export default function AddProductModal({isShow, yampiProducts, handleModalShow,
 
                 setValidated(false)
                 closeModal()
-                handleAddProduct()
-                resetForm(form)
+                handleAddProducts(successes)
             })
+        resetForm(form)
     }
 
     return (

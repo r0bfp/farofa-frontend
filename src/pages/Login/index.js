@@ -1,5 +1,5 @@
 import './index.css'
-import { Form, Button } from 'react-bootstrap'
+import { Form, Button, Spinner } from 'react-bootstrap'
 import logo from '../../images/logo.png'
 import { useContext, useState } from 'react';
 import { AuthContext } from '../../contexts/AuthContext';
@@ -10,6 +10,7 @@ import { toast } from 'react-toastify';
 export default function Login() {
     const {signin} = useContext(AuthContext)
     const [validated, setValidated] = useState(false)
+    const [loading, setLoading] = useState(false)
     const navigate = useNavigate()
 
     async function onSubmit(event) {
@@ -24,8 +25,12 @@ export default function Login() {
             return
         }
 
+        setLoading(true)
+
         const status = await signin(username.value, password.value)
 
+        setLoading(false)
+        
         if(status){
             navigate('/app/home')
         }else{
@@ -54,7 +59,20 @@ export default function Login() {
                         <Form.Control.Feedback type='invalid'>Senha inválida!</Form.Control.Feedback>
                     </Form.Group>
                     <div className="d-grid gap-2">
-                        <Button variant="primary" type="submit" className='w-12'>Entrar</Button>
+                        <Button variant="primary" type="submit" className='w-12'>
+                            {
+                                !loading ? 'Entrar' : (
+                                    <Spinner
+                                        as="span"
+                                        animation="border"
+                                        role="status"
+                                        aria-hidden="true"
+                                        size="sm"
+                                    />
+                                )
+                            }
+                             
+                        </Button>
                     </div>
                 </Form>
             </div>

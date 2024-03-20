@@ -3,49 +3,62 @@ import { FarofaApi } from '../../services/FarofaApi'
 import ProductsTable from './ProductsTable'
 import SettingsDropdown from './SettingsDropdown'
 import './style.css'
+import Loader from '../../components/Loader'
 
 
 export default function Products() {
     const [products, setProducts] = useState([])
     const [yampiProducts, setYampiProducts] = useState([])
+    const [loading, setLoading] = useState(false)
 
     useEffect(() => {
-        fetchProducts()
-        fetchYampiProducts()
+        fetchData()
     }, [])
 
-    async function fetchProducts() {
-        setProducts(await FarofaApi.listProducts())
-    }
+    async function fetchData() {
+        try {
+            setLoading(true)
 
-    async function fetchYampiProducts() {
-        setYampiProducts(await FarofaApi.listYampiProducts())
+            const [productsResponse, yampiProductsResponse] = await Promise.all([
+                FarofaApi.listProducts(),
+                FarofaApi.listYampiProducts()
+            ])
+
+            setProducts(productsResponse)
+            setYampiProducts(yampiProductsResponse)
+        } catch (error) {
+            console.error('Erro ao buscar dados:', error)
+        } finally {
+            setLoading(false)
+        }
     }
 
     return (
-        <div className='container'>
-            <div className='products-module'>
-                <div className='container-header'>
-                    <div>
-                        <h5>Produtos</h5>
-                        <span className='text-secondary'>Gerenciamento do estoque de produtos</span>
+        <>
+            <Loader visible={loading}/>
+            <div className='container'>
+                <div className='products-module'>
+                    <div className='container-header'>
+                        <div>
+                            <h5>Produtos</h5>
+                            <span className='text-secondary'>Gerenciamento do estoque de produtos</span>
+                        </div>
+                        <div>
+                            <SettingsDropdown />
+                        </div>
                     </div>
-                    <div>
-                        <SettingsDropdown />
+                    <div className='container-body'>
+                        <ProductsTable
+                            products={products}
+                            setProducts={setProducts}
+                            yampiProducts={yampiProducts}
+                        />
                     </div>
-                </div>
-                <div className='container-body'>
-                    <ProductsTable
-                        products={products}
-                        setProducts={setProducts}
-                        yampiProducts={yampiProducts}
-                        fetchProducts={fetchProducts}
-                    />
-                </div>
-                <div className='container-footer'>
-                    <span className='text-secondary'>{products.length} Registros</span>
+                    <div className='container-footer'>
+                        <span className='text-secondary'>{products.length} Registros</span>
+                    </div>
                 </div>
             </div>
-        </div>
+        </>
     )
 }

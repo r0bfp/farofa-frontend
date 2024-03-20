@@ -22,9 +22,9 @@ export default function ProductsTable({products, setProducts, yampiProducts, fet
 
     function handleDeleteProduct(product) {
         toast.promise(FarofaApi.deleteProduct(product.id), {
-            pending: `Excluindo produto ${product.id}`,
+            pending: `Excluindo produto ${product.name}`,
             success: 'Produto excluido!',
-            error: `Ocorreu um erro ao remover o produto ${product.id}`
+            error: `Ocorreu um erro ao remover o produto ${product.name}`
         })
         setProducts(prev => prev.filter(e => e.id !== product.id))
     }
@@ -33,8 +33,9 @@ export default function ProductsTable({products, setProducts, yampiProducts, fet
         setProducts(prev => prev.map(e => e.id === product.id ? product : e))
     }
 
-    async function handleAddProduct() {
-        await fetchProducts()
+    async function handleAddProducts(products) {
+        console.log(products);
+        // await fetchProducts()
     }
 
     function handleSelectProduct(modal, product) {
@@ -101,7 +102,7 @@ export default function ProductsTable({products, setProducts, yampiProducts, fet
                 isShow={modal.add} 
                 yampiProducts={yampiProducts} 
                 handleModalShow={handleModalShow}
-                handleAddProduct={handleAddProduct}
+                handleAddProducts={handleAddProducts}
             />
             <DeleteProductModal 
                 isShow={modal.delete} 
