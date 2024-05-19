@@ -48,7 +48,7 @@ export const FarofaApi = {
     },
     listProducts: async () => {
         try {
-            const response = await api.get('/products', { 
+            const response = await api.get('/stock', { 
                 transformResponse: [data => data] 
             })
 
@@ -62,7 +62,7 @@ export const FarofaApi = {
     },
     addProducts: async (products) => {
         const promises = products.map(product =>
-            api.post('/products', product)
+            api.post('/stock', product)
               .then(response => ({status: response.status, ...response.data}))
               .catch(error => ({ code: product.code, status: error.response.status }))
         )
@@ -70,10 +70,10 @@ export const FarofaApi = {
         return await Promise.all(promises)
     },
     deleteProduct: (productId) => {
-        return api.delete(`/products/${productId}`)
+        return api.delete(`/stock/${productId}`)
     },
     editProduct: (product) => {
-        return api.put(`/products/${product.id}`, product)
+        return api.put(`/stock/${product.id}`, product)
     },
     listYampiProducts: async () => {
         try {
