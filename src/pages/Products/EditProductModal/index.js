@@ -1,7 +1,9 @@
-import { useState } from "react"
-import { Button, Col, Form, InputGroup, Modal, Row } from "react-bootstrap"
-import { FarofaApi } from "../../../services/FarofaApi"
-import { toast } from "react-toastify"
+import { useState } from 'react'
+import { Button, Col, Form, InputGroup, Modal, Row } from 'react-bootstrap'
+import { FarofaApi } from '../../../services/FarofaApi'
+import { toast } from 'react-toastify'
+import Select from 'react-select'
+
 
 
 export default function EditProductModal({isShow, product, handleModalShow, yampiProducts, handleEditProduct}) {
@@ -25,10 +27,10 @@ export default function EditProductModal({isShow, product, handleModalShow, yamp
         const formData = {
             id: product.id,
             type: product.type,
-            name: yampiProducts.find(e => e.id == form.elements.product.value).name,
+            name: yampiProducts.find(e => e.value == form.elements.product.value).label,
             id_yampi: form.elements.product.value,
             message: form.elements.message.value,
-            code: form.elements.code.value,
+            code: form.elements.code && form.elements.code.value,
         }
 
         FarofaApi.editProduct(formData)
@@ -52,51 +54,42 @@ export default function EditProductModal({isShow, product, handleModalShow, yamp
                     <Modal.Title>Editar produto</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
-                    <Row className="mb-3">
-                        <Form.Group as={Col} md="12">
+                    <Row className='mb-3'>
+                        <Form.Group as={Col} md='12'>
                             <Form.Label>Produto</Form.Label>
-                            <Form.Select
-                                required
+                            <Select 
+                                options={yampiProducts} 
                                 name='product'
-                                defaultValue={product.id_yampi}
-                            >
-                                <option value=''>Selecione</option>
-                                {
-                                    yampiProducts.map(p => (
-                                        <option
-                                            selected={p.id === product.id_yampi}
-                                            key={p.id}
-                                            value={p.id}
-                                        >{p.name}</option>
-                                    ))
-                                }
-                            </Form.Select>
+                                defaultInputValue={product.name}
+                                placeholder='Selecione...'
+                                required
+                            />
                         </Form.Group>
                     </Row>
-                    <Row className="mb-3">
-                        <Form.Group as={Col} md="12" >
+                    <Row className='mb-3'>
+                        <Form.Group as={Col} md='12' >
                             <Form.Label>Mensagem</Form.Label>
                             <Form.Control
                                 defaultValue={product.message}
                                 name='message'
-                                as="textarea"
-                                placeholder="Mensagem"
+                                as='textarea'
+                                placeholder='Mensagem'
                                 required
                             />
                         </Form.Group>
-                        <Form.Control.Feedback type="invalid">Insira um código.</Form.Control.Feedback>
+                        <Form.Control.Feedback type='invalid'>Insira um código.</Form.Control.Feedback>
                     </Row>
                     {
                         product.type === 'produto' && (
-                            <Row className="mb-3">
-                                <Form.Group as={Col} md="12" >
+                            <Row className='mb-3'>
+                                <Form.Group as={Col} md='12' >
                                     <Form.Label>Código</Form.Label>
-                                    <InputGroup hasValidation className="mb-2">
+                                    <InputGroup hasValidation className='mb-2'>
                                         <Form.Control
                                             defaultValue={product.code}
-                                            type="text"
+                                            type='text'
                                             name='code'
-                                            placeholder="Código"
+                                            placeholder='Código'
                                             required
                                         />
                                     </InputGroup>
@@ -106,8 +99,8 @@ export default function EditProductModal({isShow, product, handleModalShow, yamp
                     }
                 </Modal.Body>
                 <Modal.Footer>
-                    <Button variant="secondary" onClick={closeModal}>Cancelar</Button>
-                    <Button variant="primary" type='submit'>Confirmar</Button>
+                    <Button variant='secondary' onClick={closeModal}>Cancelar</Button>
+                    <Button variant='primary' type='submit'>Confirmar</Button>
                 </Modal.Footer>
             </Form>
         </Modal>

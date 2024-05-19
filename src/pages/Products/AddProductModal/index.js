@@ -1,7 +1,8 @@
-import { Button, Col, Form, InputGroup, Modal, Row } from "react-bootstrap"
-import { FarofaApi } from "../../../services/FarofaApi"
-import { toast } from "react-toastify"
-import { useState } from "react"
+import { Button, Col, Form, InputGroup, Modal, Row } from 'react-bootstrap'
+import { FarofaApi } from '../../../services/FarofaApi'
+import { toast } from 'react-toastify'
+import { useState } from 'react'
+import Select from 'react-select'
 import './style.css'
 
 
@@ -42,6 +43,7 @@ export default function AddProductModal({isShow, yampiProducts, handleModalShow,
 
     function onConfirm(event) {
         const form = event.currentTarget
+
         const {type, product, message, code} = form.elements
 
         event.preventDefault()
@@ -54,7 +56,7 @@ export default function AddProductModal({isShow, yampiProducts, handleModalShow,
 
         const formData = {
             type: type.value,
-            name: yampiProducts.find(e => e.id == product.value).name,
+            name: yampiProducts.find(e => e.value == product.value).label,
             id_yampi: product.value,
             message: message.value,
             code: type.value === 'produto' ? code.value : '',
@@ -92,50 +94,48 @@ export default function AddProductModal({isShow, yampiProducts, handleModalShow,
                     <Modal.Title>Adicionar produtos</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
-                        <Row className="mb-3">
+                        <Row className='mb-3'>
                             <Form.Group a={Col} md='12'>
                                 <Form.Label>Produto</Form.Label>
-                                <Form.Select name='product' required>
-                                    <option value=''>Selecione</option>
-                                    {
-                                        yampiProducts.map(product => (
-                                            <option key={product.id} value={product.id}>{product.name}</option>
-                                        ))
-                                    }
-                                </Form.Select>
+                                <Select 
+                                    options={yampiProducts} 
+                                    name='product' 
+                                    placeholder='Selecione...'
+                                    required
+                                />
                             </Form.Group>
                         </Row>
-                        <Row className="mb-3">
-                            <Form.Group as={Col} md="8" >
+                        <Row className='mb-3'>
+                            <Form.Group as={Col} md='8' >
                                 <Form.Label>Tipo</Form.Label>
                                 <Form.Select name='type' onChange={e => setSelectedType(e.target.value)}>
                                     <option value='produto'>Produto</option>
                                     <option value='servico'>Serviço</option>
                                 </Form.Select>
                             </Form.Group>
-                            <Form.Group as={Col} md="4" >
+                            <Form.Group as={Col} md='4' >
                                 <Form.Label>Qtd.</Form.Label>
                                 <InputGroup hasValidation>
                                     <Form.Control
-                                        type="number"
+                                        type='number'
                                         defaultValue={codesAmount}
                                         disabled={selectedType === 'servico'}
-                                        placeholder="Qtd"
+                                        placeholder='Qtd'
                                         required
-                                        max="50"
-                                        min="1"
+                                        max='50'
+                                        min='1'
                                         onChange={e => handleChangeCodesAmount(e.target.value)}
                                     />
                                 </InputGroup>
                             </Form.Group>
                         </Row>
-                        <Row className="mb-3">
-                            <Form.Group as={Col} md="12" >
+                        <Row className='mb-3'>
+                            <Form.Group as={Col} md='12' >
                                 <Form.Label>Mensagem</Form.Label>
                                 <Form.Control
                                     disabled={selectedType === 'servico'}
-                                    as="textarea"
-                                    placeholder="Mensagem"
+                                    as='textarea'
+                                    placeholder='Mensagem'
                                     required
                                     name='message'
                                     defaultValue={defaultMessage}
@@ -144,19 +144,19 @@ export default function AddProductModal({isShow, yampiProducts, handleModalShow,
                         </Row>
                         {
                             selectedType === 'produto' && (
-                                <Row className="mb-3">
-                                    <Form.Group as={Col} className="p-0">
-                                        <div className="codes-title">
+                                <Row className='mb-3'>
+                                    <Form.Group as={Col} className='p-0'>
+                                        <div className='codes-title'>
                                             <Form.Label>Códigos</Form.Label>
                                         </div>
-                                        <div className="codes-container">
+                                        <div className='codes-container'>
                                         {
                                             Array.from({length: codesAmount}, (value, index) => (
-                                                <InputGroup hasValidation className="mb-2" key={index}>
+                                                <InputGroup hasValidation className='mb-2' key={index}>
                                                     <InputGroup.Text>{index + 1}</InputGroup.Text>
                                                     <Form.Control
-                                                        type="text"
-                                                        placeholder="Código"
+                                                        type='text'
+                                                        placeholder='Código'
                                                         required
                                                         name='code'
                                                         onBlur={e => handleCodeBlur(index, e.target.value)}
@@ -171,8 +171,8 @@ export default function AddProductModal({isShow, yampiProducts, handleModalShow,
                         }
                 </Modal.Body>
                 <Modal.Footer>
-                    <Button variant="secondary" onClick={closeModal}>Cancelar</Button>
-                    <Button variant="primary" type="submit">Confirmar</Button>
+                    <Button variant='secondary' onClick={closeModal}>Cancelar</Button>
+                    <Button variant='primary' type='submit'>Confirmar</Button>
                 </Modal.Footer>
             </Form>
         </Modal>

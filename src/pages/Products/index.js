@@ -31,7 +31,7 @@ export default function Products() {
             ])
 
             setProducts(productsResponse)
-            setYampiProducts(yampiProductsResponse)
+            setYampiProducts(yampiProductsResponse.map(e => ({value: e.id, label: e.name})))
             setSendMailIsActive(sendMailIsActiveResponse)
         } catch (error) {
             console.error('Erro ao buscar dados:', error)
