@@ -2,7 +2,8 @@ import axios from "axios"
 import JSONbigint from "json-bigint"
 
 
-const api = axios.create({baseURL: process.env.REACT_APP_API_URL_V2})
+const api = axios.create({baseURL: process.env.REACT_APP_API_URL})
+console.log(process.env.REACT_APP_API_URL)
 
 api.interceptors.request.use(
     function(config) {
