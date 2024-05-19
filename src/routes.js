@@ -1,6 +1,5 @@
 import { BrowserRouter, Routes, Route, Navigate, Outlet } from "react-router-dom"
 
-import Main from "./pages/Main"
 import Login from "./pages/Login"
 import Products from "./pages/Products"
 import { useContext, useEffect, useState } from "react"
