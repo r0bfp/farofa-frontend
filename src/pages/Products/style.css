@@ -1,0 +1,46 @@
+.container {
+    width: 100%;
+    height: 100vh;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.products-module {
+    background-color: var(--container-background-color);
+    border-radius: var(--border-radius);
+    border: var(--border);
+    min-width: 1000px;
+}
+
+.container-header {
+    padding: var(--module-padding);
+    border-bottom: var(--border);
+    display: flex;
+    justify-content: space-between;
+}
+
+.container-body {
+    padding: var(--module-padding);
+    background-color: #FFF;
+    border-radius: var(--border-radius);
+    min-height: 400px;
+}
+
+.container-footer {
+    padding: var(--module-padding);
+    border-top: var(--border);
+    display: flex;
+    justify-content: space-betwee;
+}
+
+.settings-menu {
+    display: flex;
+    justify-content: space-between;
+    width: 200px;
+}
+
+.dropdown-toggle::after {
+    display: none !important; 
+}
